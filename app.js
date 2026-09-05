@@ -222,8 +222,29 @@ function playEvolutionAnimation() {
  */
 actionButtons.forEach(function (button) {
   button.addEventListener("click", function () {
+    const beforeStageIndex = getCurrentStageIndex();
+    const action = button.dataset.action;
+    const points = Number(button.dataset.points);
+
+    ecoScore += points;
+    actionCount += 1;
+    records.unshift({
+      action: action,
+      points: points
+    });
+
+    render();
+
     statusMessage.textContent =
-      "아직 환경 실천 기능이 완성되지 않았습니다. MISSION.md를 확인하세요.";
+      `${action} 실천 완료! ${points}점을 얻었습니다.`;
+
+    const afterStageIndex = getCurrentStageIndex();
+
+    if (beforeStageIndex !== afterStageIndex) {
+      playEvolutionAnimation();
+    } else {
+      playBounceAnimation();
+    }
 
     // TODO: 이 부분에 환경 실천 기능을 작성하세요.
   });
@@ -255,14 +276,6 @@ missionButton.addEventListener("click", function () {
  * 게임을 처음 상태로 되돌립니다.
  */
 resetButton.addEventListener("click", function () {
-  const shouldReset = window.confirm(
-    "에코 점수와 실천 기록을 모두 초기화할까요?"
-  );
-
-  if (!shouldReset) {
-    return;
-  }
-
   ecoScore = 0;
   actionCount = 0;
   records = [];
